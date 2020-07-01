@@ -1,0 +1,69 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <span>Shop admin</span>
+        <button style="right: 1%; position: absolute;" mat-button (click)="showResults(serversResult)">Результаты имитации</button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-drawer-container class="example-container" autosize>
+    <mat-drawer class="example-sidenav" mode="side" opened>
+        <div class="servers">
+            <button id="{{server.port}}" *ngFor="let server of servers" mat-button class="server" matBadgeSize="small" matBadge="on" (click)="selectServer(server)">
+                {{server.name}} [{{server.port}}]
+            </button>
+        </div>
+    </mat-drawer>
+
+    <div class="example-sidenav-content">
+        <div>
+            <div style="display: table; width: 100%;">
+                <div style="display: table-cell; width: 450px;">
+                    <h2>Выбор метода балансировки нагрузки</h2>
+                </div>
+                <div style="display: table-cell;">
+                    <mat-form-field style="width: 100%;">
+                        <mat-label>Метод балансировки</mat-label>
+                        <mat-select [(ngModel)]="selectedLoadMethod">
+                            <mat-option *ngFor="let loadMethod of loadMethods" [value]="loadMethod">
+                                {{loadMethod.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <p>{{selectedLoadMethod?.description}}</p>
+            <mat-divider></mat-divider>
+            <div>
+                <h2>Имитирование нагрузки</h2>
+                <p>Имитирование нагрузки - выполнение определенного количество транзакций (имитация покупок)</p>
+                <div class="content">
+                    <div class="left-block">
+                        <div *ngIf="selectedLoadMethod?.name== 'Weighted Round Robin'">
+                            <mat-form-field *ngFor="let serverCoef of serversCoefs; let i = index" style="width: 100%;">
+                                <mat-label>Коэффициент {{serverCoef.server.name}} [{{serverCoef.server.port}}]</mat-label>
+                                <mat-select [(value)]="serversCoefs[i].coef">
+                                    <mat-option [value]='1'>1</mat-option>
+                                    <mat-option [value]='2'>2</mat-option>
+                                    <mat-option [value]='3'>3</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <mat-form-field style="width: 66%;">
+                                <mat-label>Количество транзакций</mat-label>
+                                <input matInput type="text" [(ngModel)]="transactionsAmount">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" (click)="submitTransactions()">Выполнить</button>
+                        </div>
+                    </div>
+                    <div class="right-block">
+                        <mat-form-field style="width: 100%;">
+                            <mat-label>Логи</mat-label>
+                            <textarea cdkTextareaAutosize matInput style="max-height: 216px;">{{logs}}</textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</mat-drawer-container>
